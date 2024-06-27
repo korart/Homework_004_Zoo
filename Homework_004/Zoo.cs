@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Xml.Serialization;
 
 namespace Homework_004
 {
@@ -7,7 +8,7 @@ namespace Homework_004
 	{
 		private static int animalNumber = 0;
 
-		public readonly int MaxAnimalCount = 2;
+		public readonly int MaxAnimalCount = 5;
 
 		public ObservableCollection<Animal> RecivedAnimals = [];
 		public ObservableCollection<Animal> Animals = [];
@@ -29,18 +30,13 @@ namespace Homework_004
 			if (e.Action == NotifyCollectionChangedAction.Add)
 			{
 				Animal animal = (Animal)e.NewItems?[0]!;
-				animalNumber++;
-				animal.Number = animalNumber;
-				animal.InZoo = true;
+				ActivateAnimal(animal);
 				Console.WriteLine("{0, -20}: Принято новое животное - {1}", this.Label, animal);
-				Thread animalThread = new Thread(animal.Live);
-				animalThread.Start();
 			}
 			if (e.Action == NotifyCollectionChangedAction.Remove)
 			{
 				Animal animal = (Animal)e.OldItems?[0]!;
 				Console.WriteLine("{0, -20}: Животное передано в другой зоопарк - {1}", this.Label, animal);
-				animal.InZoo = false;
 			}
 		}
 
@@ -60,7 +56,16 @@ namespace Homework_004
 		public void RejectAnimalHandler(object? sender, EventArgs e)
 		{
 			Console.WriteLine("{0, -20}: Животное возвращено поставщику - {1}", this.Label, ((VeterinaryClinicEventArgs)e).Animal);
-			//this.RecivedAnimals = new ObservableCollection<Animal>();
+		}
+
+		private void ActivateAnimal(Animal animal)
+		{
+			animalNumber++;
+			animal.Number = animalNumber;
+			animal.InZoo = true;
+
+			Thread animalThread = new Thread(animal.Live);
+			animalThread.Start();
 		}
 	}
 }

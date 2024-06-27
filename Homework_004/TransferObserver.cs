@@ -24,6 +24,7 @@
 					{
 						Console.WriteLine();
 						Console.WriteLine("{0, -20}: Найдено животное для трансфера - {1}", this.Label, animalToTranser);
+						animalToTranser.InZoo = false;
 						zoo.Animals.Remove(animalToTranser);
 					}
 				}
